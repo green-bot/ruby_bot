@@ -1,27 +1,37 @@
 [{
   "default_cmd": "npm start",
-  "default_path": "./node_modules/__name__",
+  "default_path": "./node_modules/vabbot",
   "default_settings": [
    {
       "name": "PROMPT_1",
-      "value": "Change me to change prompt 1",
+      "value": "Thank you for texting us. We love our vetrans",
       "type": "text"
     },
     {
       "name": "PROMPT_2",
-      "value": "Change me to change prompt 2",
+      "value": "What service are you looking for?",
+      "type": "text"
+    },
+    {
+      "name": "PROMPT_3",
+      "value": "Where are you?",
       "type": "text"
     },
     {
       "name": "SIGNATURE",
-      "value": "Thank you, you can visit us on the web at http://www.green-bot.com",
+      "value": "Thank you, you can visit us on the web.",
+      "type": "text"
+    },
+    {
+      "name": "GOOGLE_LOCATION_KEY",
+      "value": "The Google Maps Geocoding API Key",
       "type": "text"
     }
   ],
-  "desc": "__description__",
+  "desc": "A bot to refer businesses to inbound customers",
   "icon_class": "information",
-  "name": "__name__",
+  "name": "vabbot",
   "owner_cmd": "",
-  "short_desc": "__description__",
-  "repo_link": "https://github.com/__github_account__/__name__"
+  "short_desc": "A bot to refer businesses to inbound customers",
+  "repo_link": "https://github.com/howethomas/vabbot"
 }]
