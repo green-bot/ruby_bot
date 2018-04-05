@@ -3,28 +3,33 @@
   "default_path": "./node_modules/vabbot",
   "default_settings": [
    {
-      "name": "PROMPT_1",
-      "value": "Thank you for texting us. We love our vetrans",
-      "type": "text"
-    },
-    {
-      "name": "PROMPT_2",
-      "value": "What service are you looking for?",
-      "type": "text"
-    },
-    {
-      "name": "PROMPT_3",
+      "name": "LOCATION_PROMPT",
       "value": "Where are you?",
       "type": "text"
     },
     {
       "name": "SIGNATURE",
-      "value": "Thank you, you can visit us on the web.",
+      "value": "Here's a link to your results: ", 
       "type": "text"
     },
     {
       "name": "GOOGLE_LOCATION_KEY",
       "value": "The Google Maps Geocoding API Key",
+      "type": "text"
+    },
+    {
+      "name": "CLASSIFIER_ID",
+      "value": "The Watson Natural Language Classifier ID",
+      "type": "text"
+    },
+    {
+      "name": "CLASSIFIER_USERNAME",
+      "value": "The Watson Natural Language Username",
+      "type": "text"
+    },
+    {
+      "name": "CLASSIFIER_PASSWORD",
+      "value": "The Watson Natural Language Password",
       "type": "text"
     }
   ],
@@ -35,3 +40,5 @@
   "short_desc": "A bot to refer businesses to inbound customers",
   "repo_link": "https://github.com/howethomas/vabbot"
 }]
+
+

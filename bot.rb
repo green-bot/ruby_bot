@@ -1,16 +1,23 @@
 #!/usr/bin/env ruby
 #
 #
-PROMPT_1 = ENV['PROMPT_1'] || 'Thank you for texting us. We love our vetrans'
-PROMPT_2 = ENV['PROMPT_2'] || 'What service are you looking for?'
-PROMPT_3 = ENV['PROMPT_3'] || 'Where are you?'
-SIGNATURE = ENV['SIGNATURE'] || 'Default signature prompt'
-GOOGLE_LOCATION_KEY = ENV['GOOGLE_LOCATION_KEY']
 
 require "./lib/greenbot.rb"
 require "geocoder"
 require "awesome_print"
+require 'rest-client'
+require 'json'
+require 'uri-handler'
 
+INITIAL_MSG = ENV['INITAL_MSG'] || "I need a lawyer to get me out of the pokie"
+LOCATION_PROMPT = ENV['LOCATION_PROMPT'] || "Where are you?"
+SIGNATURE = ENV['SIGNATURE'] || "Here's a link to your results: "
+GOOGLE_LOCATION_KEY = ENV['GOOGLE_LOCATION_KEY']
+CLASSIFIER_ID = ENV['CLASSIFIER_ID'] || "2fbbc6x326-nlc-1764"
+CLASSIFIER_USERNAME = ENV['CLASSIFIER_USERNAME'] || "bae2977a-0f8c-461c-b994-658b1dbc68b2"
+CLASSIFIER_PASSWORD = ENV['CLASSIFIER_PASSWORD'] || "rwcJpfpetkJ7"
+
+# curl -G --user "bae2977a-0f8c-461c-b994-658b1dbc68b2":"rwcJpfpetkJ7" "https://gateway.watsonplatform.net/natural-language-classifier/api/v1/classifiers/2fbbc6x326-nlc-1764/classify" --data-urlencode "text=I want to move homes"
 Geocoder.configure(
   :timeout => 10,
   :google => {
@@ -19,28 +26,24 @@ Geocoder.configure(
   }
 )
 
-types = %w(mortgage realestate bankruptcy criminal wills divorce injury retirement insurance litigation moving )
+begin
+  data = INITIAL_MSG.to_uri
+  url = "https://gateway.watsonplatform.net/natural-language-classifier/api/v1/classifiers/#{CLASSIFIER_ID}/classify?text=#{data}"
+  response = RestClient::Request.execute method: :get, url: url, user: CLASSIFIER_USERNAME, password: CLASSIFIER_PASSWORD
+  category_response = JSON.parse(response.body)
+  puts "{{whisper: category: #{category_response['top_class']}. confidence: #{category_response['classes'][0]['confidence']}}}"
+  category_response.remember("category_info")
+  reported_location = ask(LOCATION_PROMPT)
+  calculated_location = Geocoder.search(reported_location)
+  reported_location.remember("reported_location")
+  calculated_location.first.data.remember("calculated_location")
 
-tell PROMPT_1
-choice = select(PROMPT_2, types)
-choice.remember("choice")
+  state = calculated_location.first.data['address_components'][2]['short_name']
+  city =  calculated_location.first.data['address_components'][0]['short_name']
+  category = category_response['top_class'].to_uri
 
-reported_location = ask(PROMPT_3)
-calculated_location = Geocoder.search(reported_location)
-reported_location.remember("reported_location")
-calculated_location.first.data.remember("calculated_location")
+  url = "https://businesslisting.thevaba.com/api/businesslistings?state=#{state}&city=#{city}&category=#{category}"
+  tell SIGNATURE + url
 
-if confirm("Would you like someone to contact you?")
-  contact_me = true
-  contact_me.remember("contact_me")
-  name = ask("When we call, who should we ask for?")
-  name.remember("who_to_ask_for")
-  if confirm("Is there another number we should try?")
-    better_number = ask("Please enter that number with an area code")
-    better_number.remember("better_number")
-  end
-else
-  tell("No problem at all.")
 end
-tell SIGNATURE
 
